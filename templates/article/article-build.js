@@ -72,7 +72,9 @@ function decorateArticleBody(main) {
 	const articleContent = main.querySelector(".section.article-content");
 	if (!articleContent) return;
 
-	const defaultContentWrapper = articleContent.querySelector(".default-content-wrapper");
+	const defaultContentWrapper = articleContent.querySelector(
+		".default-content-wrapper"
+	);
 	if (!defaultContentWrapper) return;
 
 	const contentHTML = defaultContentWrapper.innerHTML;
@@ -97,10 +99,13 @@ function decorateArticleTitle(main) {
 	const section = main.querySelector(".section.article-title");
 	if (!section) return;
 
-	const defaultContentWrapper = section.querySelector(".default-content-wrapper");
+	const defaultContentWrapper = section.querySelector(
+		".default-content-wrapper"
+	);
 	if (!defaultContentWrapper) return;
 
-	const h1Text = defaultContentWrapper.querySelector("h1")?.innerText.trim() || "";
+	const h1Text =
+		defaultContentWrapper.querySelector("h1")?.innerText.trim() || "";
 
 	const titleBlock = document.createElement("div");
 	titleBlock.className = "article-header__title-block";
@@ -117,23 +122,24 @@ function decorateHeroImage(main) {
 	const section = main.querySelector(".section.hero-image");
 	if (!section) return;
 
-	const defaultContentWrapper = section.querySelector(".default-content-wrapper");
-	if (!defaultContentWrapper) return;
+	const oldWrapper = section.querySelector(".default-content-wrapper");
+	if (!oldWrapper) return;
 
-	const picture = defaultContentWrapper.querySelector("picture");
+	// Extract original <picture>
+	const picture = oldWrapper.querySelector("picture");
 	if (!picture) return;
 
-	// grab caption dynamically
-	const caption = [...defaultContentWrapper.querySelectorAll("p")]
-		.map((p) => p.innerText.trim())
-		.filter(Boolean)[1]; // 2nd <p> if exists
+	// Extract caption <p> (if exists, after picture)
+	let captionText = "";
+	const paragraphs = oldWrapper.querySelectorAll("p");
+	if (paragraphs.length > 1) {
+		captionText = paragraphs[1].innerText.trim();
+	}
 
+	// Build new structure
 	const photoBlock = document.createElement("div");
 	photoBlock.className =
 		"article-header__photo-block article-header__photo-block--normalsize";
-
-	const cmpStoryFigure = document.createElement("div");
-	cmpStoryFigure.className = "cmp-story-figure";
 
 	const figure = document.createElement("figure");
 	figure.className = "cmp-story-figure__in";
@@ -144,20 +150,28 @@ function decorateHeroImage(main) {
 	const webImage = document.createElement("div");
 	webImage.className = "cmp-story-figure__web-image";
 
+	// Move original picture into new structure
 	picture.classList.add("cmp-story-list__img");
 	webImage.appendChild(picture);
 	imageWrapper.appendChild(webImage);
-	figure.appendChild(imageWrapper);
 
-	if (caption) {
-		const figcaption = document.createElement("figcaption");
-		figcaption.className = "cmp-story-figure__caption";
-		figcaption.textContent = caption;
-		figure.appendChild(figcaption);
+	// Caption (dynamic from <p>)
+	if (captionText) {
+		const caption = document.createElement("figcaption");
+		caption.className = "cmp-story-figure__caption";
+		caption.textContent = captionText;
+		figure.appendChild(imageWrapper);
+		figure.appendChild(caption);
+	} else {
+		figure.appendChild(imageWrapper);
 	}
 
+	const cmpStoryFigure = document.createElement("div");
+	cmpStoryFigure.className = "cmp-story-figure";
 	cmpStoryFigure.appendChild(figure);
+
 	photoBlock.appendChild(cmpStoryFigure);
 
-	defaultContentWrapper.replaceWith(photoBlock);
+	// Replace old wrapper with new block
+	oldWrapper.replaceWith(photoBlock);
 }
