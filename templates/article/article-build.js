@@ -1,149 +1,163 @@
+// -----------------------------
+// Entry Point
+// -----------------------------
 export async function loadLazy(main) {
-  const articleContent = document.createElement("div");
-  articleContent.className = "articlecontent";
+	const articleContent = buildArticleContent(main);
 
-  const articleContentBlock = document.createElement("section");
-  articleContentBlock.className = "article-content-block";
-  articleContent.appendChild(articleContentBlock);
+	// Move sections into header/body
+	distributeSections(main, articleContent);
 
-  const articleHeader = document.createElement("div");
-  articleHeader.className = "article-header";
-  articleContentBlock.appendChild(articleHeader);
+	// Append new wrapper to main
+	main.appendChild(articleContent);
 
-  const articleBody = document.createElement("div");
-  articleBody.className = "article-body";
-  articleContentBlock.appendChild(articleBody);
-
-  [...main.querySelectorAll("main > .section")].forEach((section) => {
-    if (section.classList.contains("article-content")) {
-      articleBody.appendChild(section);
-    } else {
-      articleHeader.appendChild(section);
-    }
-  });
-
-  main.appendChild(articleContent);
-
-  decorateArticleHeaderBlock(main);
-  decorateArticleBodyBlock(main);
+	// Run decoration pipeline
+	decorateArticle(articleContent, main);
 }
 
-function decorateArticleHeaderBlock(main) {
-  const articleHeader = document.querySelector(".article-header");
-  if (!articleHeader) return;
+// -----------------------------
+// Build main structure
+// -----------------------------
+function buildArticleContent() {
+	const articleContent = document.createElement("div");
+	articleContent.className = "articlecontent";
 
-  decorateArticleTitleBlock(main);
-  decorateHeroImageBlock(main);
+	const articleContentBlock = document.createElement("section");
+	articleContentBlock.className = "article-content-block";
+
+	const articleHeader = document.createElement("div");
+	articleHeader.className = "article-header";
+
+	const articleBody = document.createElement("div");
+	articleBody.className = "article-body";
+
+	articleContentBlock.append(articleHeader, articleBody);
+	articleContent.appendChild(articleContentBlock);
+
+	return articleContent;
 }
 
-function decorateArticleBodyBlock(main) {
-   const sections = main.querySelectorAll(".section.article-content");
-  sections.forEach((section) => {
-    const oldWrapper = section.querySelector(".default-content-wrapper");
-    if (!oldWrapper) return;
+// -----------------------------
+// Place sections into header/body
+// -----------------------------
+function distributeSections(main, articleContent) {
+	const articleHeader = articleContent.querySelector(".article-header");
+	const articleBody = articleContent.querySelector(".article-body");
 
-    // Grab inner content of old wrapper
-    const contentHTML = oldWrapper.innerHTML;
+	[...main.querySelectorAll("main > .section")].forEach((section) => {
+		if (section.classList.contains("article-content")) {
+			articleBody.appendChild(section);
+		} else {
+			articleHeader.appendChild(section);
+		}
+	});
+}
 
-    // Build new nested structure
-    const articleBodyIn = document.createElement("div");
-    articleBodyIn.className = "article-body__in";
-    articleBodyIn.innerHTML = `
-      <div class="article-body__content">
-        <div class="mm-col-blk__in">
-          <div class="article-body__content-top">
-            <div class="rtearticle text">
-              ${contentHTML}
-            </div>
+// -----------------------------
+// Decoration Pipeline
+// -----------------------------
+function decorateArticle(articleContent, main) {
+	decorateArticleHeader(articleContent, main);
+	decorateArticleBody(main);
+}
+
+function decorateArticleHeader(articleContent, main) {
+	const articleHeader = articleContent.querySelector(".article-header");
+	if (!articleHeader) return;
+
+	decorateArticleTitle(main);
+	decorateHeroImage(main);
+}
+
+function decorateArticleBody(main) {
+	const articleContent = main.querySelector(".section.article-content");
+	if (!articleContent) return;
+
+	const defaultContentWrapper = articleContent.querySelector(".default-content-wrapper");
+	if (!defaultContentWrapper) return;
+
+	const contentHTML = defaultContentWrapper.innerHTML;
+
+	const articleBodyIn = document.createElement("div");
+	articleBodyIn.className = "article-body__in";
+	articleBodyIn.innerHTML = `
+    <div class="article-body__content">
+      <div class="mm-col-blk__in">
+        <div class="article-body__content-top">
+          <div class="rtearticle text">
+            ${contentHTML}
           </div>
         </div>
       </div>
-    `;
+    </div>`;
 
-    // Replace only the .default-content-wrapper
-    oldWrapper.replaceWith(articleBodyIn);
-  });
+	defaultContentWrapper.replaceWith(articleBodyIn);
 }
 
-function decorateArticleTitleBlock(main) {
-  const section = document.querySelector(".section.article-title");
+function decorateArticleTitle(main) {
+	const section = main.querySelector(".section.article-title");
+	if (!section) return;
 
-  if (section) {
-    const oldWrapper = section.querySelector(".default-content-wrapper");
-    if (!oldWrapper) return;
+	const defaultContentWrapper = section.querySelector(".default-content-wrapper");
+	if (!defaultContentWrapper) return;
 
-    const h1Text = oldWrapper.querySelector("h1")?.innerText.trim() || "";
+	const h1Text = defaultContentWrapper.querySelector("h1")?.innerText.trim() || "";
 
-    // Build new structure
-    const titleBlock = document.createElement("div");
-    titleBlock.className = "article-header__title-block";
+	const titleBlock = document.createElement("div");
+	titleBlock.className = "article-header__title-block";
 
-    const h1 = document.createElement("h1");
-    h1.className = "article-header__title";
-    h1.textContent = h1Text;
+	const h1 = document.createElement("h1");
+	h1.className = "article-header__title";
+	h1.textContent = h1Text;
 
-    titleBlock.appendChild(h1);
-
-    // Replace only the inner wrapper
-    oldWrapper.replaceWith(titleBlock);
-  }
+	titleBlock.appendChild(h1);
+	defaultContentWrapper.replaceWith(titleBlock);
 }
 
-function decorateHeroImageBlock(main) {
-  const section = main.querySelector(".section.hero-image");
-  if (!section) return;
+function decorateHeroImage(main) {
+	const section = main.querySelector(".section.hero-image");
+	if (!section) return;
 
-  const oldWrapper = section.querySelector(".default-content-wrapper");
-  if (!oldWrapper) return;
+	const defaultContentWrapper = section.querySelector(".default-content-wrapper");
+	if (!defaultContentWrapper) return;
 
-  // Extract original <picture>
-  const picture = oldWrapper.querySelector("picture");
-  if (!picture) return;
+	const picture = defaultContentWrapper.querySelector("picture");
+	if (!picture) return;
 
-  // Extract caption <p> (if exists, after picture)
-  let captionText = "";
-  const paragraphs = oldWrapper.querySelectorAll("p");
-  if (paragraphs.length > 1) {
-    captionText = paragraphs[1].innerText.trim();
-  }
+	// grab caption dynamically
+	const caption = [...defaultContentWrapper.querySelectorAll("p")]
+		.map((p) => p.innerText.trim())
+		.filter(Boolean)[1]; // 2nd <p> if exists
 
-  // Build new structure
-  const photoBlock = document.createElement("div");
-  photoBlock.className =
-    "article-header__photo-block article-header__photo-block--normalsize";
+	const photoBlock = document.createElement("div");
+	photoBlock.className =
+		"article-header__photo-block article-header__photo-block--normalsize";
 
-  const figure = document.createElement("figure");
-  figure.className = "cmp-story-figure__in";
+	const cmpStoryFigure = document.createElement("div");
+	cmpStoryFigure.className = "cmp-story-figure";
 
-  const imageWrapper = document.createElement("div");
-  imageWrapper.className = "cmp-story-figure__image";
+	const figure = document.createElement("figure");
+	figure.className = "cmp-story-figure__in";
 
-  const webImage = document.createElement("div");
-  webImage.className = "cmp-story-figure__web-image";
+	const imageWrapper = document.createElement("div");
+	imageWrapper.className = "cmp-story-figure__image";
 
-  // Move original picture into new structure
-  picture.classList.add("cmp-story-list__img");
-  webImage.appendChild(picture);
-  imageWrapper.appendChild(webImage);
+	const webImage = document.createElement("div");
+	webImage.className = "cmp-story-figure__web-image";
 
-  // Caption (dynamic from <p>)
-  if (captionText) {
-    const caption = document.createElement("figcaption");
-    caption.className = "cmp-story-figure__caption";
-    caption.textContent = captionText;
-    figure.appendChild(imageWrapper);
-    figure.appendChild(caption);
-  } else {
-    figure.appendChild(imageWrapper);
-  }
+	picture.classList.add("cmp-story-list__img");
+	webImage.appendChild(picture);
+	imageWrapper.appendChild(webImage);
+	figure.appendChild(imageWrapper);
 
-  const cmpStoryFigure = document.createElement("div");
-  cmpStoryFigure.className = "cmp-story-figure";
-  cmpStoryFigure.appendChild(figure);
+	if (caption) {
+		const figcaption = document.createElement("figcaption");
+		figcaption.className = "cmp-story-figure__caption";
+		figcaption.textContent = caption;
+		figure.appendChild(figcaption);
+	}
 
-  photoBlock.appendChild(cmpStoryFigure);
+	cmpStoryFigure.appendChild(figure);
+	photoBlock.appendChild(cmpStoryFigure);
 
-  // Replace old wrapper with new block
-  oldWrapper.replaceWith(photoBlock);
+	defaultContentWrapper.replaceWith(photoBlock);
 }
-
