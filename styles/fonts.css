@@ -37,3 +37,13 @@
     font-style: normal;
     font-display: swap
 }
+
+:root {
+    --en-font-primary: Merriweather;
+    --font-primary: EGGIndulekhaUni;
+    --font-secondary: PanchariUni;
+    --basic-heading-fonts-pack: var(--en-font-primary), var(--font-primary), Arial, Helvetica, sans-serif;
+    --basic-fonts-pack: Arial, var(--font-secondary), var(--font-primary), var(--en-font-primary), Helvetica, sans-serif;
+    --font-weight-regular: normal;
+    --font-weight-bold: bold
+}
