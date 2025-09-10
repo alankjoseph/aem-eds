@@ -36,7 +36,7 @@ export default function decorate(block) {
   outerDiv.appendChild(header);
 
   // Insert into existing section
-  section.appendChild(outerDiv);
+  section.prepend(outerDiv);
 
   // Remove old article-title container
   oldContainer.remove();

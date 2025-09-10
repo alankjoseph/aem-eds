@@ -1,0 +1,39 @@
+@font-face {
+    font-family: Merriweather;
+    src: url("../fonts/Merriweather-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap
+}
+
+@font-face {
+    font-family: Merriweather;
+    src: url("../fonts/Merriweather-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap
+}
+
+@font-face {
+    font-family: PanchariUni;
+    src: url("../fonts/PanchariUN.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap
+}
+
+@font-face {
+    font-family: PanchariUni;
+    src: url("../fonts/PanchariUB.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap
+}
+
+@font-face {
+    font-family: EGGIndulekhaUni;
+    src: url("../fonts/EGGIndulekha.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap
+}

@@ -11,7 +11,11 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  toClassName,
+  getMetadata,
 } from './aem.js';
+
+const TEMPLATE_LIST = ['article']
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -37,6 +41,60 @@ async function loadFonts() {
     if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
   } catch (e) {
     // do nothing
+  }
+}
+
+/**
+ * @typedef Template
+ * @property {function} [loadLazy] If provided, will be called in the lazy phase. Expects a
+ *  single argument: the document's <main> HTMLElement.
+ * @property {function} [loadEager] If provided, will be called in the eager phase. Expects a single
+ *  argument: the document's <main> HTMLElement.
+ * @property {function} [loadDelayed] If provided, will be called in the delayed phase. Expects a
+ *  single argument: the document's <main> HTMLElement.
+ */
+
+/**
+ * @type {Template}
+ */
+let universalTemplate;
+/**
+ * @type {Template}
+ */
+let template;
+
+/**
+ * Invokes a template's eager method, if specified.
+ * @param {Template} [toLoad] Template whose eager method should be invoked.
+ * @param {HTMLElement} main The document's main element.
+ */
+async function loadEagerTemplate(toLoad, main) {
+  if (toLoad && toLoad.loadEager) {
+    await toLoad.loadEager(main);
+  }
+}
+
+/**
+ * Invokes a template's lazy method, if specified.
+ * @param {Template} [toLoad] Template whose lazy method should be invoked.
+ * @param {HTMLElement} main The document's main element.
+ */
+async function loadLazyTemplate(toLoad, main) {
+  if (toLoad) {
+    if (toLoad.loadLazy) {
+      await toLoad.loadLazy(main);
+    }
+  }
+}
+
+/**
+ * Invokes a template's delayed method, if specified.
+ * @param {Template} [toLoad] Template whose delayed method should be invoked.
+ * @param {HTMLElement} main The document's main element.
+ */
+async function loadDelayedTemplate(toLoad, main) {
+  if (toLoad && toLoad.loadDelayed) {
+    await toLoad.loadDelayed(main);
   }
 }
 
@@ -77,6 +135,7 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    await decorateTemplates(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -98,6 +157,7 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+  await loadLazyTemplate(template, main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
@@ -108,6 +168,40 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+}
+
+async function decorateTemplates(main) {
+  try {
+    // Load the universal template for every page
+    // universalTemplate = await loadTemplate('universal', main);
+
+    const templateName = toClassName(getMetadata('template'));
+    const templates = TEMPLATE_LIST;
+    if (templates.includes(templateName)) {
+      template = await loadTemplate(templateName, main);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('template loading failed', error);
+  }
+}
+
+async function loadTemplate(templateName, main) {
+  const cssLoaded = loadCSS(
+    `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}-build.css`,
+  );
+  let module;
+  const decorateComplete = new Promise((resolve) => {
+    (async () => {
+      module = await import(
+        `../templates/${templateName}/${templateName}-build.js`
+      );
+      await loadEagerTemplate(module, main);
+      resolve();
+    })();
+  });
+  await Promise.all([cssLoaded, decorateComplete]);
+  return module;
 }
 
 /**
