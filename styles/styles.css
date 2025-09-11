@@ -4,6 +4,10 @@ hr {
     overflow: visible
 }
 
+header{
+    min-height: 214px;
+}
+
 pre {
     font-family: monospace,monospace;
     font-size: 1em

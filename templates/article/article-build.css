@@ -447,7 +447,7 @@ h4,
   display: block;
 }
 .cmp-header .cmp-social-media__link.with-icon {
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   font-size: 0px;
   line-height: 0px;
@@ -514,7 +514,7 @@ h4,
   line-height: 0px;
   letter-spacing: normal;
   font-style: normal;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -245px 0px;
 }
@@ -566,7 +566,7 @@ h4,
   content: "";
   width: 30px;
   height: 30px;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -560px -35px;
 }
@@ -678,7 +678,7 @@ h4,
   width: 45px;
   height: 45px;
   background-color: var(--light-color);
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   -webkit-border-radius: 45px;
   border-radius: 45px;
@@ -790,7 +790,7 @@ h4,
   height: 30px;
   right: 0;
   top: 0;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -315px -35px;
   -webkit-transition: all 0.4s ease;
@@ -810,7 +810,7 @@ h4,
   width: 30px;
   height: 30px;
   background-color: transparent;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -140px 0px;
   border: 0;

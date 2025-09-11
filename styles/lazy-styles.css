@@ -118,7 +118,7 @@
   display: block;
   width: 30px;
   height: 30px;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   font-size: 0px;
   line-height: 0px;
@@ -136,7 +136,7 @@
   display: block;
   width: 30px;
   height: 30px;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -122px -249px;
   font-size: 0px;
@@ -171,7 +171,7 @@
   display: inline-block;
   width: 30px;
   height: 30px;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -105px 0px;
   font-size: 0px;
@@ -320,7 +320,7 @@
   line-height: 0px;
   letter-spacing: normal;
   font-style: normal;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   width: 30px;
   height: 30px;
@@ -342,7 +342,7 @@
   line-height: 0px;
   letter-spacing: normal;
   font-style: normal;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   width: 30px;
   height: 30px;
@@ -450,7 +450,7 @@
   width: 32px;
   height: 32px;
   display: block;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -518px -249px;
 }
@@ -609,7 +609,7 @@
   width: 30px;
   height: 30px;
   display: block;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -281px -390px;
 }
@@ -617,7 +617,7 @@
   width: 30px;
   height: 30px;
   display: block;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -316px -390px;
 }
@@ -652,7 +652,7 @@
   width: 30px;
   height: 30px;
   display: block;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -380px -389px;
 }
@@ -789,7 +789,7 @@
   display: inline-block;
   width: 30px;
   height: 30px;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
 }
 .article-content-block .article-header .article-header__action-block-2 .article-header__action-block-in .article-header__action-block-left .article-header__action-block-ul .article-header__action-block-li .cmp-modal-box .cmp-modal-box__in .cmp-modal-box__body .cmp-article-share .cmp-article-share__item .cmp-article-share__link .cmp-article-share__icon i.share-white-icons__email {
@@ -923,7 +923,7 @@
   height: 30px;
   display: block;
   background-color: transparent;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   background-position: -455px 0px;
   cursor: pointer;
@@ -1748,7 +1748,7 @@
   display: block;
   width: 30px;
   height: 30px;
-  background-image: url("../../resources/img/icons.svg");
+  background-image: url("../../icons/icons.svg");
   background-repeat: no-repeat;
   font-size: 0px;
   line-height: 0px;
