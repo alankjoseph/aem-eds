@@ -1,40 +1,40 @@
-import {
-  getMetadata,
-} from '../../scripts/aem.js';
+import { getMetadata, loadCSS } from "../../scripts/aem.js";
 
-import {
-  getSectionPath,
-  getSubSectionPath
-} from '../../scripts/common.js';
+import { getSectionPath, getSubSectionPath } from "../../scripts/common.js";
 function getArticleByMetadata() {
   return {
     path: window.location.pathname,
-    section: getMetadata('section'),
-    subSsection: getMetadata('sub-section'),
+    section: getMetadata("section"),
+    subSsection: getMetadata("sub-section"),
   };
 }
 
 export async function loadEager(main) {
-    const article = getArticleByMetadata();
-    const breadCrumb = buildBreadCrumb(article);
-	const articleContent = buildArticleContent(main);
+  const article = getArticleByMetadata();
+  const breadCrumb = buildBreadCrumb(article);
+  const articleContent = buildArticleContent(main);
 
-	// Move sections into header/
-	distributeSections(main, articleContent);
+  // Move sections into header/
+  distributeSections(main, articleContent);
 
-	// Append new wrapper to main
-    main.appendChild(breadCrumb)
-	main.appendChild(articleContent);
+  // Append new wrapper to main
+  main.appendChild(breadCrumb);
+  main.appendChild(articleContent);
 
-	// Run decoration pipeline
-	decorateArticle(articleContent, main);
+  // Run decoration pipeline
+  decorateArticle(articleContent, main);
+}
+
+export async function loadLazy(main) {
+  loadCSS(`${window.hlx.codeBasePath}/styles/slick.min.css`)
+  loadCSS(`${window.hlx.codeBasePath}/templates/article/article.css`);
 }
 
 function buildBreadCrumb(article) {
-  const sectionName = article.section
-  const subSectionName = article.subSsection
-  const sectionPath = getSectionPath(article.path)
-  const subSectionPath = getSubSectionPath(article.path)  
+  const sectionName = article.section;
+  const subSectionName = article.subSsection;
+  const sectionPath = getSectionPath(article.path);
+  const subSectionPath = getSubSectionPath(article.path);
 
   if (!sectionName) return null;
 
@@ -56,7 +56,7 @@ function buildBreadCrumb(article) {
   // Section item
   const liSection = document.createElement("li");
   const aSection = document.createElement("a");
-  aSection.href = sectionPath
+  aSection.href = sectionPath;
   aSection.title = sectionName;
   aSection.textContent = sectionName;
   liSection.appendChild(aSection);
@@ -81,37 +81,36 @@ function buildBreadCrumb(article) {
   return container;
 }
 
-
 // -----------------------------
 // Build main structure
 // -----------------------------
 function buildArticleContent() {
-	const articleContent = document.createElement("div");
-	articleContent.className = "articlecontent";
+  const articleContent = document.createElement("div");
+  articleContent.className = "articlecontent";
 
-	const articleContentBlock = document.createElement("section");
-	articleContentBlock.className = "article-content-block";
+  const articleContentBlock = document.createElement("section");
+  articleContentBlock.className = "article-content-block";
 
-	const articleHeader = document.createElement("div");
-	articleHeader.className = "article-header";
+  const articleHeader = document.createElement("div");
+  articleHeader.className = "article-header";
 
-	const articleBody = document.createElement("div");
-	articleBody.className = "article-body";
+  const articleBody = document.createElement("div");
+  articleBody.className = "article-body";
 
-	articleContentBlock.append(articleHeader, articleBody);
-	articleContent.appendChild(articleContentBlock);
+  articleContentBlock.append(articleHeader, articleBody);
+  articleContent.appendChild(articleContentBlock);
 
-	return articleContent;
+  return articleContent;
 }
 
 // -----------------------------
 // Place sections into header/body
 // -----------------------------
 function distributeSections(main, articleContent) {
-	const articleHeader = articleContent.querySelector(".article-header");
-	const articleBody = articleContent.querySelector(".article-body");
+  const articleHeader = articleContent.querySelector(".article-header");
+  const articleBody = articleContent.querySelector(".article-body");
 
-	const sections = [...main.querySelectorAll("main > .section")];
+  const sections = [...main.querySelectorAll("main > .section")];
 
   sections.forEach((section, index) => {
     const isLast = index === sections.length - 1;
@@ -129,40 +128,44 @@ function distributeSections(main, articleContent) {
 // Decoration Pipeline
 // -----------------------------
 function decorateArticle(articleContent, main) {
-	decorateArticleHeader(articleContent, main);
-	decorateArticleBody(main);
+  decorateArticleHeader(articleContent, main);
+  decorateArticleBody(main);
 }
 
 function decorateArticleHeader(articleContent, main) {
-	const articleHeader = articleContent.querySelector(".article-header");
-	if (!articleHeader) return;
+  const articleHeader = articleContent.querySelector(".article-header");
+  if (!articleHeader) return;
 
-	decorateArticleTitle(main);
-	decorateHeroImage(main);
+  decorateArticleTitle(main);
+  decorateHeroImage(main);
 }
 
 function decorateArticleTitle(main) {
-	const defaultContentWrapper = document.querySelector(".section .default-content-wrapper");
-	if (!defaultContentWrapper) return;
+  const defaultContentWrapper = document.querySelector(
+    ".section .default-content-wrapper"
+  );
+  if (!defaultContentWrapper) return;
 
-	// Create new wrapper
-	const newDiv = document.createElement("div");
-	newDiv.className = "article-header__title-block";
+  // Create new wrapper
+  const newDiv = document.createElement("div");
+  newDiv.className = "article-header__title-block";
 
-	// Create new h1
-	const newH1 = document.createElement("h1");
-	newH1.className = "article-header__title";
-	newH1.textContent = defaultContentWrapper.textContent; // keep the same text
+  // Create new h1
+  const newH1 = document.createElement("h1");
+  newH1.className = "article-header__title";
+  newH1.textContent = defaultContentWrapper.textContent; // keep the same text
 
-	// Append h1 to new div
-	newDiv.appendChild(newH1);
+  // Append h1 to new div
+  newDiv.appendChild(newH1);
 
-	// Replace old parent with new structure
-	defaultContentWrapper.parentElement.replaceWith(newDiv);
+  // Replace old parent with new structure
+  defaultContentWrapper.parentElement.replaceWith(newDiv);
 }
 
 function decorateHeroImage(main) {
-  const defaultContentWrapper = document.querySelector(".section .default-content-wrapper");
+  const defaultContentWrapper = document.querySelector(
+    ".section .default-content-wrapper"
+  );
   if (!defaultContentWrapper) return;
 
   // Extract original <picture>
@@ -222,17 +225,26 @@ function decorateHeroImage(main) {
   defaultContentWrapper.parentElement.replaceWith(photoBlock);
 }
 
-
 function decorateArticleBody(main) {
 
-	const defaultContentWrapper =  main.querySelector(".article-body .section .default-content-wrapper");
-	if (!defaultContentWrapper) return;
+  document
+    .querySelectorAll(".article-body > .section > .default-content-wrapper")
+    .forEach((wrapper) => {
+      // Move all children of the wrapper before the wrapper
+      while (wrapper.firstChild) {
+        wrapper.parentNode.insertBefore(wrapper.firstChild, wrapper);
+      }
+      // Remove the empty wrapper itself
+      wrapper.remove();
+    });
 
-	const contentHTML = defaultContentWrapper.innerHTML;
+  const defaultContentWrapper = main.querySelector(".article-body .section");
+  if (!defaultContentWrapper) return;
 
-	const articleBodyIn = document.createElement("div");
-	articleBodyIn.className = "article-body__in";
-	articleBodyIn.innerHTML = `
+  const contentHTML = defaultContentWrapper.innerHTML;
+  const articleBodyIn = document.createElement("div");
+  articleBodyIn.className = "article-body__in";
+  articleBodyIn.innerHTML = `
     <div class="article-body__content">
       <div class="mm-col-blk__in">
         <div class="article-body__content-top">
@@ -243,5 +255,5 @@ function decorateArticleBody(main) {
       </div>
     </div>`;
 
-	defaultContentWrapper.parentElement.replaceWith(articleBodyIn);
+  defaultContentWrapper.replaceChildren(articleBodyIn);
 }
