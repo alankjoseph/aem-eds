@@ -166,6 +166,10 @@ main {
   display: block;
 }
 
+header{
+  min-height: 214px;
+}
+
 a {
   background-color: transparent;
 }
