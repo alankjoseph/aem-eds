@@ -1,4 +1,4 @@
-import { getMetadata, loadCSS } from "../../scripts/aem.js";
+import { getMetadata, loadCSS, createOptimizedPicture } from "../../scripts/aem.js";
 
 import { getSectionPath, getSubSectionPath } from "../../scripts/common.js";
 function getArticleByMetadata() {
@@ -175,7 +175,7 @@ function decorateHeroImage(main) {
   // ✅ Force eager loading on <img> inside <picture>
   const img = picture.querySelector("img");
   if (img) {
-    img.setAttribute("loading", "eager");
+    img.replaceWith(createOptimizedPicture(img.src, img.alt, true, [{ width: '382' }]))
   }
 
   // Extract caption <p> (if exists, after picture)
