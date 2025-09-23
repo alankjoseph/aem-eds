@@ -172,10 +172,17 @@ function decorateHeroImage(main) {
   const picture = defaultContentWrapper.querySelector("picture");
   if (!picture) return;
 
-  // ✅ Force eager loading on <img> inside <picture>
+  // ✅ Build an optimized <picture> (force eager load)
   const img = picture.querySelector("img");
+  let optimizedPicture;
   if (img) {
-    img.replaceWith(createOptimizedPicture(img.src, img.alt, true, [{ width: '382' }]))
+    optimizedPicture = createOptimizedPicture(
+      img.src,
+      img.alt,
+      true, // eager load
+      [{ media: '(min-width: 600px)', width: '2000' },{ width: "382" }]
+    );
+    optimizedPicture.classList.add("cmp-story-list__img");
   }
 
   // Extract caption <p> (if exists, after picture)
@@ -199,9 +206,10 @@ function decorateHeroImage(main) {
   const webImage = document.createElement("div");
   webImage.className = "cmp-story-figure__web-image";
 
-  // Move original picture into new structure
-  picture.classList.add("cmp-story-list__img");
-  webImage.appendChild(picture);
+  // ✅ Use optimized <picture> instead of original
+  if (optimizedPicture) {
+    webImage.appendChild(optimizedPicture);
+  }
   imageWrapper.appendChild(webImage);
 
   // Caption (dynamic from <p>)
