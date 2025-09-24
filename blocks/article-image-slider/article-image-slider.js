@@ -1,5 +1,4 @@
 export default function decorate(block) {
-    console.log("hello-world")
   if (!block) return;
 
   const blocks = block.querySelectorAll(".article-image-slider.block > div");

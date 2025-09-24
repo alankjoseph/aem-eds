@@ -13,7 +13,7 @@ export async function loadEager(main) {
   const article = getArticleByMetadata();
   const breadCrumb = buildBreadCrumb(article);
   const articleContent = buildArticleContent(main);
-
+ createTopAdvtBlock()
   // Move sections into header/
   distributeSections(main, articleContent);
 
@@ -23,11 +23,36 @@ export async function loadEager(main) {
 
   // Run decoration pipeline
   decorateArticle(articleContent, main);
+  // insertAds();
+  insertAdsEvery2P();
 }
 
 export async function loadLazy(main) {
   loadCSS(`${window.hlx.codeBasePath}/styles/slick.min.css`)
   loadCSS(`${window.hlx.codeBasePath}/templates/article/article.css`);
+}
+
+function createTopAdvtBlock() {
+  const topAdvtBlock = document.createElement("div");
+  topAdvtBlock.className = "top-advt-block";
+  topAdvtBlock.innerHTML = `
+    <div class="advtBlock">
+      <div class="advtBlock__in">
+        <div class="advtBlock__title">ADVERTISEMENT</div>
+        <div class="advtBlock__content">
+          <!-- /21987057265/vanitha/superleaderboard-1-ad -->
+          <div id="header1-ad"></div>
+        </div>
+        <div class="advtBlock__footer">
+          Interested in showcasing your ad? 
+          <a href="javascript:void(0);" title="Get in touch">Get in touch</a>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.prepend(topAdvtBlock);
+
+  
 }
 
 function buildBreadCrumb(article) {
@@ -265,3 +290,43 @@ function decorateArticleBody(main) {
 
   defaultContentWrapper.replaceChildren(articleBodyIn);
 }
+
+function insertAdsEvery2P() {
+  const container = document.querySelector(".rtearticle.text");
+  if (!container) return;
+
+  const paragraphs = container.querySelectorAll(":scope > p");
+  console.log(paragraphs.length)
+  if (paragraphs.length === 0) return;
+
+  let adCount = 0;
+
+  // Loop through all <p> tags
+  paragraphs.forEach((p, index) => {
+    if (adCount >= 4) return;
+    if ((index + 1) % 2 === 0) { 
+      adCount++;
+      const adWrapper = document.createElement("div");
+      adWrapper.className = "article-body__component-slot";
+      adWrapper.innerHTML = `
+        <div class="advtBlock">
+          <div class="advtBlock__in">
+            <div class="advtBlock__title">ADVERTISEMENT</div>
+            <div class="advtBlock__content">
+              <div id="mpu${adCount}-ad"></div>
+            </div>
+            <div class="advtBlock__footer">
+              Interested in showcasing your ad?
+              <a href="javascript:void(0);" title="Get in touch">Get in touch</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      p.insertAdjacentElement("afterend", adWrapper);
+    }
+  });
+}
+
+
+
