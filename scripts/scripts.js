@@ -210,7 +210,7 @@ async function loadTemplate(templateName, main) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => import('./delayed.js'), 0);
   // load anything that can be postponed to the latest here
 }
 
